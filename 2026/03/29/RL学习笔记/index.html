@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RL学习笔记 | Jackp0t的小窝</title><meta name="author" content="Jackp0t"><meta name="copyright" content="Jackp0t"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1 RL基础1.1 agent组成 策略（policy）。智能体会用策略来选取下一步的动作。 策略是智能体的动作模型，它决定了智能体的动作。它其实是一个函数，用于把输入的状态变成动作。策略可分为两种：随机性策略和确定性策略。 随机性策略（stochastic policy）就是 ππ 函数，即π(a∣s)&#x3D;p(at&#x3D;a∣st&#x3D;s)π(a∣s)&#x3D;p(*at*&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RL学习笔记">
+<meta property="og:url" content="https://jackkp0t.github.io/2026/03/29/RL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Jackp0t的小窝">
+<meta property="og:description" content="1 RL基础1.1 agent组成 策略（policy）。智能体会用策略来选取下一步的动作。 策略是智能体的动作模型，它决定了智能体的动作。它其实是一个函数，用于把输入的状态变成动作。策略可分为两种：随机性策略和确定性策略。 随机性策略（stochastic policy）就是 ππ 函数，即π(a∣s)&#x3D;p(at&#x3D;a∣st&#x3D;s)π(a∣s)&#x3D;p(*at*&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/119587398_p0_master1200.jpg">
+<meta property="article:published_time" content="2026-03-29T11:50:48.000Z">
+<meta property="article:modified_time" content="2026-04-16T10:32:55.449Z">
+<meta property="article:author" content="Jackp0t">
+<meta property="article:tag" content="RL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/119587398_p0_master1200.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RL学习笔记",
+  "url": "https://jackkp0t.github.io/2026/03/29/RL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/",
+  "image": "https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/119587398_p0_master1200.jpg",
+  "datePublished": "2026-03-29T11:50:48.000Z",
+  "dateModified": "2026-04-16T10:32:55.449Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Jackp0t",
+      "url": "https://jackkp0t.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://jackkp0t.github.io/2026/03/29/RL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RL学习笔记',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/Camera_XHS_1740761908581.jpg" alt="Logo"><span class="site-name">Jackp0t的小窝</span></a><a class="nav-page-title" href="/"><span class="site-name">RL学习笔记</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">RL学习笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-29T11:50:48.000Z" title="发表于 2026-03-29 19:50:48">2026-03-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-16T10:32:55.449Z" title="更新于 2026-04-16 18:32:55">2026-04-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="1-RL基础"><a href="#1-RL基础" class="headerlink" title="1 RL基础"></a>1 RL基础</h1><h2 id="1-1-agent组成"><a href="#1-1-agent组成" class="headerlink" title="1.1 agent组成"></a>1.1 agent组成</h2><ul>
+<li><p><strong>策略（policy）</strong>。智能体会用策略来选取下一步的动作。</p>
+<p>策略是智能体的动作模型，它决定了智能体的动作。它其实是一个函数，用于把输入的状态变成动作。策略可分为两种：随机性策略和确定性策略。</p>
+<p><strong>随机性策略（stochastic policy）<strong>就是 π<em>π</em> 函数，即π(a∣s)&#x3D;p(at&#x3D;a∣st&#x3D;s)<em>π</em>(<em>a</em>∣<em>s</em>)&#x3D;<em>p</em>(*a</strong>t*&#x3D;<em>a</em>∣*s</strong>t*&#x3D;<em>s</em>)。输入一个状态 s<em>s</em>，输出一个概率。 这个概率是智能体所有动作的概率，然后对这个概率分布进行采样，可得到智能体将采取的动作。比如可能是有 0.7 的概率往左，0.3 的概率往右，那么通过采样就可以得到智能体将采取的动作。</p>
+<p>**确定性策略（deterministic policy）*<em>就是智能体直接采取最有可能的动作，即 a∗&#x3D;arg⁡max⁡aπ(a∣s)<em>a</em>∗&#x3D;<em>a</em>argmax</em>π*(<em>a</em>∣<em>s</em>)。</p>
+</li>
+<li><p><strong>价值函数（value function）</strong>。我们用价值函数来对当前状态进行评估。价值函数用于评估智能体进 入某个状态后，可以对后面的奖励带来多大的影响。价值函数值越大，说明智能体进入这个状态越有利。</p>
+<p><em><strong>1️⃣ 状态价值函数 V(s)</strong></em></p>
+<p>👉 关键词：<br> State Value Function</p>
+<p>定义：</p>
+<blockquote>
+<p>在状态 s 下，按照某个策略 π，未来能获得的期望总奖励</p>
+</blockquote>
+<p>👉 通俗理解：</p>
+<ul>
+<li>“我现在这个位置值多少钱？”</li>
+<li><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409102749455.png"></li>
+</ul>
+<hr>
+<p><em><strong>2️⃣ 动作价值函数 Q(s,a)</strong></em></p>
+<p>👉 关键词：<br> Action Value Function</p>
+<p>定义：</p>
+<blockquote>
+<p>在状态 s 下，执行动作 a，然后继续按策略 π 行动，能获得的期望总奖励</p>
+</blockquote>
+<p>👉 通俗理解：</p>
+<ul>
+<li><p>“在这个位置，<strong>做这个动作</strong>值多少钱？”</p>
+</li>
+<li><p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409102824151.png"></p>
+<p><em><strong>V与Q的相互转换</strong></em></p>
+<p>二者是可以互相转换的：</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409103422549.png"></p>
+<p>👉 意思是：</p>
+<ul>
+<li>状态价值 &#x3D; 所有动作价值的加权平均</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>模型（model）</strong>。模型表示智能体对环境的状态进行理解，它决定了环境中世界的运行方式。</p>
+<p>第3个组成部分是模型，模型决定了下一步的状态。下一步的状态取决于当前的状态以及当前采取的动作。它由状态转移概率和奖励函数两个部分组成。状态转移概率即</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409103006270.png"></p>
+</li>
+</ul>
+<p>​       奖励函数是指我们在当前状态采取了某个动作，可以得到多大的奖励，即</p>
+<p><img src="C:\Users\jackpot\AppData\Roaming\Typora\typora-user-images\image-20260409103039202.png" alt="image-20260409103039202"></p>
+<h2 id="1-2马尔科夫决策过程"><a href="#1-2马尔科夫决策过程" class="headerlink" title="1.2马尔科夫决策过程"></a>1.2马尔科夫决策过程</h2><p>在随机过程中，<strong>马尔可夫性质（Markov property）<strong>是指一个随机过程在给定现在状态及所有过去状态情况下，其未来状态的条件概率分布仅依赖于当前状态。以离散随机过程为例，假设随机变量 X0,X1,⋯ ,XT<em>X</em>0,<em>X</em>1,⋯,<em>X**T</em>构成一个随机过程。这些随机变量的所有可能取值的集合被称为状态空间（state space）。如果 Xt+1*X</strong>t*+1 对于过去状态的条件概率分布仅是 Xt*X</strong>t* 的一个函数，则</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409103945978.png"></p>
+<p>我们可以用<strong>状态转移矩阵（state transition matrix）<strong>P</strong>P</strong> 来描述状态转移</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409104034174.png"></p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409105251765.png"></p>
+<p>表示：</p>
+<blockquote>
+<p>在状态 <strong>s</strong> 下执行动作 <strong>a</strong>，转移到状态 <strong>s’</strong> 的概率</p>
+</blockquote>
+<h3 id="1-2-1马尔可夫奖励过程"><a href="#1-2-1马尔可夫奖励过程" class="headerlink" title="1.2.1马尔可夫奖励过程"></a>1.2.1马尔可夫奖励过程</h3><p>但是这里我们采取了另外一种计算方法，从价值函数里面推导出<strong>贝尔曼方程（Bellman equation）</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409104253522.png"></p>
+<h3 id="1-2-2马尔可夫决策过程的策略"><a href="#1-2-2马尔可夫决策过程的策略" class="headerlink" title="1.2.2马尔可夫决策过程的策略"></a>1.2.2马尔可夫决策过程的策略</h3><p>策略定义了在某一个状态应该采取什么样的动作。知道当前状态后，我们可以把当前状态代入策略函数来得到一个概率，即</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409105030643.png"></p>
+<p>概率代表在所有可能的动作里面怎样采取行动，比如可能有 0.7 的概率往左走，有 0.3 的概率往右走，这是一个概率的表示。另外策略也可能是确定的，它有可能直接输出一个值，或者直接告诉我们当前应该采取什么样的动作，而不是一个动作的概率。假设概率函数是平稳的（stationary），不同时间点，我们采取的动作其实都是在对策略函数进行采样。</p>
+<p>已知马尔可夫决策过程和策略 π<em>π</em>，我们可以把马尔可夫决策过程转换成马尔可夫奖励过程。在马尔可夫决策过程里面，状态转移函数 P(s′∣s,a)<em>P</em>(<em>s</em>′∣<em>s</em>,<em>a</em>) 基于它当前的状态以及它当前的动作。因为我们现在已知策略函数，也就是已知在每一个状态下，可能采取的动作的概率，所以我们就可以直接把动作进行加和，去掉 <em>a</em>，这样我们就可以得到对于马尔可夫奖励过程的转移，<strong>这里就没有动作</strong>，即</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409112217691.png"></p>
+<p>对于<strong>奖励函数</strong>，我们也可以<strong>把动作去掉</strong>，这样就会得到类似于马尔可夫奖励过程的奖励函数，即</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409105823180.png"></p>
+<h3 id="1-2-3马尔可夫决策过程和马尔可夫过程-马尔可夫奖励过程的区别"><a href="#1-2-3马尔可夫决策过程和马尔可夫过程-马尔可夫奖励过程的区别" class="headerlink" title="1.2.3马尔可夫决策过程和马尔可夫过程&#x2F;马尔可夫奖励过程的区别"></a>1.2.3马尔可夫决策过程和马尔可夫过程&#x2F;马尔可夫奖励过程的区别</h3><p>马尔可夫决策过程里面的状态转移与马尔可夫奖励过程以及马尔可夫过程的状态转移的差异如图 2.9 所示。马尔可夫过程&#x2F;马尔可夫奖励过程的状态转移是直接决定的。比如当前状态是 s<em>s</em>，那么直接通过转移概率决定下一个状态是什么。但对于马尔可夫决策过程，它的中间多了一层动作 a<em>a</em> ，即智能体在当前状态的时候，首先要决定采取某一种动作，这样我们会到达某一个黑色的节点。到达这个黑色的节点后，因为有一定的不确定性，所以当智能体当前状态以及智能体当前采取的动作决定过后，智能体进入未来的状态其实也是一个概率分布。在当前状态与未来状态转移过程中多了一层决策性，这是马尔可夫决策过程与之前的马尔可夫过程&#x2F;马尔可夫奖励过程很不同的一点。在马尔可夫决策过程中，动作是由智能体决定的，智能体会采取动作来决定未来的状态转移。</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409111342248.png"></p>
+<h3 id="1-2-4贝尔曼期望方程"><a href="#1-2-4贝尔曼期望方程" class="headerlink" title="1.2.4贝尔曼期望方程"></a>1.2.4贝尔曼期望方程</h3><p>我们可以把状态价值函数和 Q 函数拆解成两个部分：即时奖励和后续状态的折扣价值（discounted value of successor state）。 通过对状态价值函数进行分解，我们就可以得到一个类似于之前马尔可夫奖励过程的贝尔曼方程————<strong>贝尔曼期望方程（Bellman expectation equation）</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409111736042.png"></p>
+<p>对于 Q 函数，我们也可以做类似的分解，得到 Q 函数的贝尔曼期望方程：</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409111802077.png"></p>
+<p>由于：</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409112109953.png"></p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260409112123395.png"></p>
+<p>相互代入得：</p>
+<p><img src="C:\Users\jackpot\AppData\Roaming\Typora\typora-user-images\image-20260409112316142.png" alt="image-20260409112316142"></p>
+<p><img src="C:\Users\jackpot\AppData\Roaming\Typora\typora-user-images\image-20260409112326553.png" alt="image-20260409112326553"></p>
+<h1 id="2-表格方法"><a href="#2-表格方法" class="headerlink" title="2 表格方法"></a>2 表格方法</h1><h2 id="2-1-Q-learning"><a href="#2-1-Q-learning" class="headerlink" title="2.1 Q-learning"></a>2.1 Q-learning</h2><p>Q学习是一种<strong>异策略（off-policy）<strong>算法。如图 3.31 所示，异策略在学习的过程中，有两种不同的策略：<strong>目标策略（target policy）<strong>和</strong>行为策略（behavior policy）</strong>。 <strong>目标策略</strong>是我们需要去学习的策略，一般用 <em>π</em> 来表示。目标策略就像是在后方指挥战术的一个军师，它可以根据自己的经验来学习最优的策略，不需要去和环境交互。 <strong>行为策略</strong>是探索环境的策略，一般用 <em>μ</em> 来表示。行为策略可以大胆地去探索到所有可能的轨迹，采集轨迹，采集数据，然后把采集到的数据“喂”给目标策略学习。而且“喂”给目标策略的数据中并不需要 at+1*a</strong>t*+1 ，而 Sarsa 是要有 at+1*a</strong>t*+1 的。行为策略像是一个战士，可以在环境里面探索所有的动作、轨迹和经验，然后把这些经验交给目标策略去学习。比如目标策略优化的时候，Q学习不会管我们下一步去往哪里探索，它只选取奖励最大的策略。</p>
+<p>在异策略学习的过程中，轨迹都是行为策略与环境交互产生的，产生这些轨迹后，我们使用这些轨迹来更新目标策略 <em>π</em>。 异策略学习有很多好处。首先，我们可以利用探索策略来学到最佳的策略，学习效率高； 其次，异策略学习可以让我们学习其他智能体的动作，进行模仿学习，学习人或者其他智能体产生的轨迹； 最后，异策略学习可以让我们重用旧的策略产生的轨迹，探索过程需要很多计算资源，这样可以节省资源。</p>
+<p>Q学习有两种策略：<strong>行为策略和目标策略</strong>。 目标策略 π<em>π</em> 直接在 Q表格上使用贪心策略，取它下一步能得到的所有状态，即</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260416161828828.png"></p>
+<p>行为策略 <em>μ</em> 可以是一个随机的策略，但我们采取 ε<em>ε</em>-贪心策略，让行为策略不至于是完全随机的，它是基于Q表格逐渐改进的。</p>
+<p>接着我们可以把 Q学习更新写成增量学习的形式</p>
+<p><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/20260416162052013.png"></p>
+<h2 id="2-2-SARSA"><a href="#2-2-SARSA" class="headerlink" title="2.2 SARSA"></a>2.2 SARSA</h2><h1 id="3-策略梯度"><a href="#3-策略梯度" class="headerlink" title="3 策略梯度"></a>3 策略梯度</h1><h1 id=""><a href="#" class="headerlink" title=""></a></h1></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://jackkp0t.github.io">Jackp0t</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://jackkp0t.github.io/2026/03/29/RL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">https://jackkp0t.github.io/2026/03/29/RL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://jackkp0t.github.io" target="_blank">Jackp0t的小窝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RL/">RL</a></div><div class="post-share"><div class="social-share" data-image="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/119587398_p0_master1200.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>请我喝茶</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/01/Agent%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Agent学习笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Agent学习笔记</div></div><div class="info-2"><div class="info-item-1">Agent学习笔记目录 记忆与检索 为什么需要记忆与RAG 记忆系统设计 MEMORY RAG   上下文工程 什么是上下文工程 为什么上下文工程重要 GSSC流水线 NoteTool TerminalTool   智能体通信协议 MCP A2A ANP   Agentic-RL    记忆与检索为什么需要记忆与RAG借鉴人类记忆系统的设计，我们可以理解为什么智能体也需要类似的记忆能力。人类智能的一个重要特征就是能够记住过去的经历，从中学习，并将这些经验应用到新的情况中。同样，一个真正智能的智能体也需要具备记忆能力。对于基于LLM的智能体而言，通常面临两个根本性局限：对话状态的遗忘和内置知识的局限————无状态导致的对话遗忘(每一次对话是独立的)，模型内置知识的局限性(LLM的知识是静态的，有限的)。 记忆与RAG的设计 记忆系统采用了四层架构设计： 1234567891011121314151617181920HelloAgents记忆系统├── 基础设施层 (Infrastructure Layer)│   ├── MemoryManager - 记忆管理器（统一调度和协调）...</div></div></div></a><a class="pagination-related" href="/2025/12/10/frida%E6%A3%80%E6%B5%8B%E5%AF%B9%E6%8A%97%E2%80%94%E2%80%94%E2%80%94%E2%80%94libmsaoaidsec-so%E7%BB%95%E8%BF%87/" title="frida检测对抗————libmsaoaidsec.so绕过"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">frida检测对抗————libmsaoaidsec.so绕过</div></div><div class="info-2"><div class="info-item-1">0x1 环境案例：某黑盒v1.3.333 手机：redmi k40 frida:  16.6.6 0x2 问题在尝试进行frida hook时发现手机正常进入，随后进程就被杀死了  需要知道是那个so在检测frida，可以hook dlopen看一下so的加载流程 123456789101112131415161718function hook_dlopen() &#123;  var android_dlopen_ext = Module.findExportByName(null, &quot;android_dlopen_ext&quot;);  console.log(&quot;addr_android_dlopen_ext&quot;, android_dlopen_ext);  Interceptor.attach(android_dlopen_ext, &#123;    onEnter: function (args) &#123;      var pathptr = args[0];      if (pathptr != null &amp;&amp; p...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/Jackkp0t/blogimage/main/img/119587398_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Jackp0t</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Jackkp0t"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来看我</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-RL%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">1 RL基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-agent%E7%BB%84%E6%88%90"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 agent组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">1.2马尔科夫决策过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%A5%96%E5%8A%B1%E8%BF%87%E7%A8%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1马尔可夫奖励过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B%E7%9A%84%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2马尔可夫决策过程的策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-3%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B%E5%92%8C%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E8%BF%87%E7%A8%8B-%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%A5%96%E5%8A%B1%E8%BF%87%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3马尔可夫决策过程和马尔可夫过程&#x2F;马尔可夫奖励过程的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-4%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%9C%9F%E6%9C%9B%E6%96%B9%E7%A8%8B"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.2.4贝尔曼期望方程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%A1%A8%E6%A0%BC%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2 表格方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Q-learning"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Q-learning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-SARSA"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 SARSA</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">3 策略梯度</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text"></span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/23/Agent%E7%9A%84%E6%8C%81%E7%BB%AD%E8%BF%9B%E5%8C%96/" title="Agent的持续进化">Agent的持续进化</a><time datetime="2026-10-23T02:10:37.000Z" title="发表于 2026-10-23 10:10:37">2026-10-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/23/Agent%E8%AF%84%E6%B5%8B%E4%BD%93%E7%B3%BB%E7%BB%BC%E8%BF%B0/" title="Agent测评体系综述">Agent测评体系综述</a><time datetime="2026-10-23T02:09:29.000Z" title="发表于 2026-10-23 10:09:29">2026-10-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/01/Agent%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Agent学习笔记">Agent学习笔记</a><time datetime="2026-08-01T05:29:59.000Z" title="发表于 2026-08-01 13:29:59">2026-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/01/ClaudeCode%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="ClaudeCode学习笔记">ClaudeCode学习笔记</a><time datetime="2026-08-01T05:29:59.000Z" title="发表于 2026-08-01 13:29:59">2026-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/29/RL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="RL学习笔记">RL学习笔记</a><time datetime="2026-03-29T11:50:48.000Z" title="发表于 2026-03-29 19:50:48">2026-03-29</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Jackp0t</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
